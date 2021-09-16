@@ -38,6 +38,13 @@ public class AppController {
         service.deleteToDo(id);
     }
 
+    //Delete an existing task
+    @DeleteMapping(value = "api/todo/task/{id}")
+    public void deleteTask(@PathVariable("id") Long id){
+        service.deleteTask(id);
+    }
+
+
 
 
 //    @PutMapping(value = "api/todo")

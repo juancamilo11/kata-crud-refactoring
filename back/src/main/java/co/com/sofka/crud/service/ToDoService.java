@@ -39,6 +39,13 @@ public class ToDoService {
         toDoRepository.deleteById(id);
     }
 
+    public void deleteTask(Long id) {
+        if(!taskRepository.existsById(id)) {
+            throw new RuntimeException("Task with id " + id + " was not found.");
+        }
+        taskRepository.deleteById(id);
+    }
+
 //    public ToDo get(Long id){
 //         return repository.findById(id).orElseThrow();
 //    }
