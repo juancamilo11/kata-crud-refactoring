@@ -2,7 +2,6 @@ package co.com.sofka.crud.dto;
 
 import lombok.*;
 
-import javax.persistence.Column;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,5 +22,5 @@ public class ToDoDTO {
         }
         this.tasksList.add(task);
     }
-    
+
 }
