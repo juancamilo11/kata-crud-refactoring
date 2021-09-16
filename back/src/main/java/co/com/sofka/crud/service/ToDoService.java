@@ -1,11 +1,12 @@
-package co.com.sofka.crud;
+package co.com.sofka.crud.service;
 
+import co.com.sofka.crud.Todo;
 import co.com.sofka.crud.repository.ToDoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class TodoService {
+public class ToDoService {
 
     @Autowired
     private ToDoRepository repository;
