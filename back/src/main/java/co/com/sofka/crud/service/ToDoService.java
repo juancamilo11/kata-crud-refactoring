@@ -1,5 +1,6 @@
 package co.com.sofka.crud.service;
 
+import co.com.sofka.crud.entity.Task;
 import co.com.sofka.crud.entity.ToDo;
 import co.com.sofka.crud.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,24 @@ public class ToDoService {
         return toDoRepository.findAll();
     }
 
-//    public ToDo save(ToDo todo){
-//        return repository.save(todo);
-//    }
-//
-//    public void delete(Long id){
-//        repository.delete(get(id));
-//    }
-//
+    public ToDo saveToDo(ToDo toDo){
+        return toDoRepository.save(toDo);
+    }
+
+    public void deleteToDo(Long id){
+        if(!toDoRepository.existsById(id)) {
+            throw new RuntimeException("ToDo list with id " + id + " was not found.");
+        }
+        toDoRepository.deleteById(id);
+    }
+
+    public Task saveTask(Task task) {
+        if(!toDoRepository.existsById(task.getIdTodo())) {
+            throw new RuntimeException("ToDo list with id " + task.getId() + " not found, try with another toDo list.");
+        }
+        return taskRepository.save(task);
+    }
+
 //    public ToDo get(Long id){
 //         return repository.findById(id).orElseThrow();
 //    }

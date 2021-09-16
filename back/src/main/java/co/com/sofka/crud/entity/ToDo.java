@@ -33,6 +33,9 @@ public class ToDo {
     public ToDo() {
     }
 
+    public ToDo(String name) {
+    }
+
     public Long getId() {
         return id;
     }
