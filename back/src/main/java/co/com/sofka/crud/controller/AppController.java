@@ -1,11 +1,13 @@
-package co.com.sofka.crud;
+package co.com.sofka.crud.controller;
 
+import co.com.sofka.crud.Todo;
+import co.com.sofka.crud.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-public class TodoController {
+public class AppController {
 
     @Autowired
     private TodoService service;
