@@ -9,8 +9,6 @@ import java.util.List;
 @Data
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name="todo")
 public class ToDo {
@@ -22,7 +20,40 @@ public class ToDo {
     @Column(name="name")
     private String name;
 
-//    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
-//    @JoinColumn(name="course_id")
-//    private List<Task> tasks;
+    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @JoinColumn(name="id_todo")
+    private List<Task> tasks;
+
+
+    public ToDo(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public ToDo() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
 }
