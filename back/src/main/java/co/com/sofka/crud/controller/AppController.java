@@ -12,32 +12,39 @@ public class AppController {
     @Autowired
     private ToDoService service;
 
+    //List all ToDos with all their dependencies
     @GetMapping(value = "api/todos")
-    public Iterable<ToDo> list(){
-        return service.list();
-    }
-    
-    @PostMapping(value = "api/todo")
-    public ToDo save(@RequestBody ToDo todo){
-        return service.save(todo);
+    public Iterable<ToDo> listAllToDos(){
+        return service.listAllToDos();
     }
 
-    @PutMapping(value = "api/todo")
-    public ToDo update(@RequestBody ToDo todo){
-        if(todo.getId() != null){
-            return service.save(todo);
-        }
-        throw new RuntimeException("No existe el id para actualziar");
-    }
 
-    @DeleteMapping(value = "api/{id}/todo")
-    public void delete(@PathVariable("id")Long id){
-        service.delete(id);
-    }
-
-    @GetMapping(value = "api/{id}/todo")
-    public ToDo get(@PathVariable("id") Long id){
-        return service.get(id);
-    }
+//    @GetMapping(value = "api/todos")
+//    public Iterable<ToDo> list(){
+//        return service.list();
+//    }
+//
+//    @PostMapping(value = "api/todo")
+//    public ToDo save(@RequestBody ToDo todo){
+//        return service.save(todo);
+//    }
+//
+//    @PutMapping(value = "api/todo")
+//    public ToDo update(@RequestBody ToDo todo){
+//        if(todo.getId() != null){
+//            return service.save(todo);
+//        }
+//        throw new RuntimeException("No existe el id para actualziar");
+//    }
+//
+//    @DeleteMapping(value = "api/{id}/todo")
+//    public void delete(@PathVariable("id")Long id){
+//        service.delete(id);
+//    }
+//
+//    @GetMapping(value = "api/{id}/todo")
+//    public ToDo get(@PathVariable("id") Long id){
+//        return service.get(id);
+//    }
 
 }
