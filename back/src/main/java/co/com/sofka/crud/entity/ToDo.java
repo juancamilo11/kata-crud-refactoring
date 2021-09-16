@@ -20,7 +20,7 @@ public class ToDo {
     @Column(name="name")
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="id_todo")
     private List<Task> tasks;
 
