@@ -22,7 +22,7 @@ public class ToDo {
     @Column(name="name")
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
-    @JoinColumn(name="course_id")
-    private List<Task> tasks;
+//    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+//    @JoinColumn(name="course_id")
+//    private List<Task> tasks;
 }
