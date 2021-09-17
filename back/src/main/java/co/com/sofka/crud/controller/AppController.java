@@ -7,6 +7,9 @@ import co.com.sofka.crud.service.ToDoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class AppController {
@@ -41,7 +44,7 @@ public class AppController {
     //Delete an existing toDo list and its tasks
     //Se le debe pasar un arreglo con sus respectivas tareas para eliminarlas antes de eliminar el ToDo
     @DeleteMapping(value = "api/todo/{id}")
-    public void deleteToDo(@PathVariable("id") Long id, @RequestBody Iterable<Long> idTasks){
+    public void deleteToDo(@PathVariable("id") Long id, @RequestBody ArrayList<Long> idTasks){
         service.deleteToDo(id, idTasks);
     }
 

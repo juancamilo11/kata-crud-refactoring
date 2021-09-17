@@ -6,6 +6,7 @@ import co.com.sofka.crud.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,7 +34,7 @@ public class ToDoService {
     }
 
     //Se le debe pasar un arreglo con sus respectivas tareas para eliminarlas antes de eliminar el ToDo
-    public void deleteToDo(Long id, Iterable<Long> idTasks){
+    public void deleteToDo(Long id, ArrayList<Long> idTasks){
         if(!toDoRepository.existsById(id)) {
             throw new RuntimeException("ToDo list with id " + id + " was not found.");
         }
