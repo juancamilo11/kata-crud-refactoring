@@ -17,11 +17,9 @@ const Form = () => {
     event.preventDefault();
 
     const request = {
-      name: item.name,
-      id: null,
-      completed: false
+      name: state.name,
+      tasks: []
     };
-
 
     fetch(HOST_API + "/todo", {
       method: "POST",
@@ -47,8 +45,6 @@ const Form = () => {
       completed: item.completed,
       idTodo: item.idTodo
     };
-    console.log(request);
-
 
     fetch(HOST_API + "/todo/task", {
       method: "PUT",
@@ -57,10 +53,6 @@ const Form = () => {
         'Content-Type': 'application/json'
       }
     })
-    // .then(response => response.json())
-    //   .then((task) => {
-    //     dispatch({ type: "update-item", item: task });
-    //   });
       .then(response => response.json())
       .then((task) => {
         dispatch({ type: "update-item", item: task });
@@ -146,9 +138,9 @@ const List = () => {
       });
   };
 
-  const decorationDone = {
-    textDecoration: 'line-through'
-  };
+  // const decorationDone = {
+  //   textDecoration: 'line-through'
+  // };
 
   return <div>
 
