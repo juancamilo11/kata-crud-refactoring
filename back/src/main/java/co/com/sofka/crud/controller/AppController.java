@@ -32,10 +32,17 @@ public class AppController {
         return service.saveTask(task);
     }
 
+    //Update an existing task
+    @PutMapping(value = "api/todo/task")
+    public Task updateTask(@RequestBody Task task){
+        return service.updateTask(task);
+    }
+
     //Delete an existing toDo list and its tasks
+    //Se le debe pasar un arreglo con sus respectivas tareas para eliminarlas antes de eliminar el ToDo
     @DeleteMapping(value = "api/todo/{id}")
-    public void deleteToDo(@PathVariable("id") Long id){
-        service.deleteToDo(id);
+    public void deleteToDo(@PathVariable("id") Long id, @RequestBody Iterable<Long> idTasks){
+        service.deleteToDo(id, idTasks);
     }
 
     //Delete an existing task
@@ -43,23 +50,4 @@ public class AppController {
     public void deleteTask(@PathVariable("id") Long id){
         service.deleteTask(id);
     }
-
-
-
-
-//    @PutMapping(value = "api/todo")
-//    public ToDo update(@RequestBody ToDo todo){
-//        if(todo.getId() != null){
-//            return service.save(todo);
-//        }
-//        throw new RuntimeException("No existe el id para actualziar");
-//    }
-//
-
-//
-//    @GetMapping(value = "api/{id}/todo")
-//    public ToDo get(@PathVariable("id") Long id){
-//        return service.get(id);
-//    }
-
 }

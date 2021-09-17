@@ -32,10 +32,12 @@ public class ToDoService {
         return taskRepository.save(task);
     }
 
-    public void deleteToDo(Long id){
+    //Se le debe pasar un arreglo con sus respectivas tareas para eliminarlas antes de eliminar el ToDo
+    public void deleteToDo(Long id, Iterable<Long> idTasks){
         if(!toDoRepository.existsById(id)) {
             throw new RuntimeException("ToDo list with id " + id + " was not found.");
         }
+        idTasks.forEach(idTask -> taskRepository.deleteById(idTask));
         toDoRepository.deleteById(id);
     }
 
@@ -46,8 +48,10 @@ public class ToDoService {
         taskRepository.deleteById(id);
     }
 
-//    public ToDo get(Long id){
-//         return repository.findById(id).orElseThrow();
-//    }
-
+    public Task updateTask(Task task) {
+        if(!taskRepository.existsById(task.getId())) {
+            throw new RuntimeException("Task with id " + task.getId() + " was not found.");
+        }
+        return taskRepository.save(task);
+    }
 }
