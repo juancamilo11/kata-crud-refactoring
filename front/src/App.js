@@ -17,7 +17,7 @@ const Form = () => {
     event.preventDefault();
 
     const request = {
-      name: state.name,
+      name: item.name,
       id: null,
       completed: false
     };
@@ -42,10 +42,11 @@ const Form = () => {
     event.preventDefault();
 
     const request = {
-      name: state.name,
+      name: state.name,      
       id: item.id,
       isCompleted: item.isCompleted
     };
+    console.log(request);
 
 
     fetch(HOST_API + "/todo/task", {
@@ -119,13 +120,15 @@ const List = () => {
     dispatch({ type: "edit-item", item: todo })
   };
 
-  const onChange = (event, todo) => {
+  const onChange = (event, task) => {
+    console.log(task);
     const request = {
-      name: todo.name,
-      id: todo.id,
-      completed: event.target.checked
+      name: task.name,
+      id: task.id,
+      completed: event.target.checked,
+      idTodo: task.idTodo
     };
-    fetch(HOST_API + "/todo", {
+    fetch(HOST_API + "/todo/task", {
       method: "PUT",
       body: JSON.stringify(request),
       headers: {
@@ -133,8 +136,8 @@ const List = () => {
       }
     })
       .then(response => response.json())
-      .then((todo) => {
-        dispatch({ type: "update-item", item: todo });
+      .then((task) => {
+        dispatch({ type: "update-item", item: task });
       });
   };
 
@@ -162,7 +165,7 @@ const List = () => {
               return <tr key={task.id}>
                 <td>{task.id}</td>
                 <td>{task.name}</td>
-                <td><input type="checkbox" defaultChecked={task.completed} onChange={(event) => onChange(event, todo)}></input></td>
+                <td><input type="checkbox" defaultChecked={task.completed} onChange={(event) => onChange(event, task)}></input></td>
                 <td><button onClick={() => onDeleteTask(task.id)}>Eliminar</button></td>
                 <td><button onClick={() => onEdit(task)}>Editar</button></td>
               </tr>
@@ -178,18 +181,6 @@ const List = () => {
 function reducer(state, action) {
   switch (action.type) {
     case 'update-item':
-      // console.log(action.item);
-      // const todoUpItem = state.todo;
-      // const listUpdateEdit = todoUpItem.list.map((item) => {
-      //   let tasks = item.tasks.map(el => {
-      //     if (el.id === action.item.id) {
-      //     return action.item;
-      //   }
-      //   return el;
-      //   });
-      //   item.tasks = tasks;
-      //   return item;
-      // });
       const todoUpItem = state.todo;
       const listUpdateEdit = todoUpItem.list.map((item) => {
         if (item.id === action.item.id) {
@@ -216,7 +207,6 @@ function reducer(state, action) {
         item.tasks=tasks;
         return item;
       });
-      console.log(listUpdateT);
       todoUpDeleteT.list = listUpdateT;
       return { ...state, todo: todoUpDeleteT }
     case 'update-list':
