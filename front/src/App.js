@@ -93,8 +93,8 @@ const Form = () => {
 const List = () => {
   const formRef = useRef(null);
   const { dispatch, state: { todo } } = useContext(Store);
-  const itemT = todo.item;
-  console.log(itemT);
+  let itemT = todo.item;
+  //console.log(itemT);
   const [stateT, setStateT] = useState(itemT);
   const currentList = todo.list;
 
@@ -117,15 +117,17 @@ const List = () => {
 
   const onAddTask = (event) => {
     event.preventDefault();
-    const request = { 
+    const request = {
       name: stateT.name,
-      tasks: []
+      completed: false,
+      idTodo: stateT.id
     };
+    console.log(request);
     // if(!nameIsvalid(request.name)) {
     //   return; 
     // }
     //request.name = request.name.trim();
-    fetch(HOST_API + "/todo", {
+    fetch(HOST_API + "/todo/task", {
       method: "POST",
       body: JSON.stringify(request),
       headers: {
@@ -133,8 +135,8 @@ const List = () => {
       }
     })
       .then(response => response.json())
-      .then((todo) => {
-        dispatch({ type: "add-item", item: todo });
+      .then((task) => {
+        dispatch({ type: "add-task", item: task });
         setStateT({ name: "" });
         formRef.current.reset();
       });
@@ -236,9 +238,9 @@ const List = () => {
           type="text"
           name="name_task"
           placeholder="¿Qué piensas hacer hoy?"
-          defaultValue={(itemT.id===todo.id)?itemT.name:""}
+          defaultValue={(itemT.idTodo===todo.id)?itemT.name:""}
           onChange={(event) => {
-            setStateT({ ...stateT, name: event.target.value })
+            setStateT({ ...stateT, name: event.target.value, id:todo.id })
           }}></input>
         {itemT.id && <button onClick={onEditTask}>Actualizar</button>}
         {!itemT.id && <button onClick={onAddTask}>Crear</button>}
@@ -319,6 +321,16 @@ function reducer(state, action) {
       const todoUp = state.todo.list;
       todoUp.push(action.item);
       return { ...state, todo: {list: todoUp, item: {}} }
+    case 'add-task':
+      const todoList = state.todo.list;
+      const todoUpdated = todoList.filter(todo => {
+        if(todo.id===action.item.idTodo){
+          todo.tasks.push(action.item);
+          return todo;
+        }
+        return todo;
+        });
+      return { ...state, todo: {list: todoUpdated, item: {}} }
     default:
       return state;
   }
