@@ -44,7 +44,8 @@ const Form = () => {
     const request = {
       name: state.name,      
       id: item.id,
-      isCompleted: item.isCompleted
+      completed: item.completed,
+      idTodo: item.idTodo
     };
     console.log(request);
 
@@ -56,6 +57,10 @@ const Form = () => {
         'Content-Type': 'application/json'
       }
     })
+    // .then(response => response.json())
+    //   .then((task) => {
+    //     dispatch({ type: "update-item", item: task });
+    //   });
       .then(response => response.json())
       .then((task) => {
         dispatch({ type: "update-item", item: task });
@@ -183,9 +188,13 @@ function reducer(state, action) {
     case 'update-item':
       const todoUpItem = state.todo;
       const listUpdateEdit = todoUpItem.list.map((item) => {
-        if (item.id === action.item.id) {
+        let tasks = item.tasks.map(el=>{
+          if (el.id === action.item.id) {
           return action.item;
         }
+        return el;
+        });
+        item.tasks=tasks;
         return item;
       });
       todoUpItem.list = listUpdateEdit;
