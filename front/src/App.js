@@ -6,21 +6,31 @@ const initialState = {
 };
 const Store = createContext(initialState)
 
+// const nameIsvalid = (name) => {
+//   let nameToValidate = name || "";
+//   if (nameToValidate.test(RegExp/[0-9A-Za-z*_()]{1-50}/)) {
+//     return true;
+//   } 
+//   console.log(nameToValidate.match(/[A-Za-z*_()]{1-50}/));
+//   return false;
+// }
 
 const Form = () => {
-  const formRef = useRef(null);
+  const formRefTodo = useRef(null);
   const { dispatch, state: { todo } } = useContext(Store);
   const item = todo.item;
   const [state, setState] = useState(item);
 
   const onAdd = (event) => {
     event.preventDefault();
-
-    const request = {
+    const request = { 
       name: state.name,
       tasks: []
     };
-
+    // if(!nameIsvalid(request.name)) {
+    //   return; 
+    // }
+    //request.name = request.name.trim();
     fetch(HOST_API + "/todo", {
       method: "POST",
       body: JSON.stringify(request),
@@ -32,7 +42,7 @@ const Form = () => {
       .then((todo) => {
         dispatch({ type: "add-item", item: todo });
         setState({ name: "" });
-        formRef.current.reset();
+        formRefTodo.current.reset();
       });
   }
 
@@ -40,44 +50,52 @@ const Form = () => {
     event.preventDefault();
 
     const request = {
-      name: state.name,      
+      name: state.name,
       id: item.id,
       completed: item.completed,
       idTodo: item.idTodo
     };
 
     fetch(HOST_API + "/todo/task", {
-      method: "PUT",
-      body: JSON.stringify(request),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
+        method: "PUT",
+        body: JSON.stringify(request),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       .then(response => response.json())
       .then((task) => {
-        dispatch({ type: "update-item", item: task });
-        setState({ name: "" });
-        formRef.current.reset();
+        dispatch({
+          type: "update-item",
+          item: task
+        });
+        setState({
+          name: ""
+        });
+        formRefTodo.current.reset();
       });
   }
 
-  return <form ref={formRef}>
+  return <form ref={formRefTodo}>
     <input
       type="text"
       name="name"
-      placeholder="¿Qué piensas hacer hoy?"
-      defaultValue={item.name}
+      placeholder="Crear lista"
+      // defaultValue={item.name}
       onChange={(event) => {
         setState({ ...state, name: event.target.value })
-      }}  ></input>
-    {item.id && <button onClick={onEdit}>Actualizar</button>}
-    {!item.id && <button onClick={onAdd}>Crear</button>}
+      }}></input>
+    {/* {item.id && <button onClick={onEdit}>Actualizar</button>} */}
+    <button onClick={onAdd}>Crear</button>
   </form>
 }
 
-
 const List = () => {
+  const formRef = useRef(null);
   const { dispatch, state: { todo } } = useContext(Store);
+  const itemT = todo.item;
+  console.log(itemT);
+  const [stateT, setStateT] = useState(itemT);
   const currentList = todo.list;
 
   useEffect(() => {
@@ -96,7 +114,63 @@ const List = () => {
       dispatch({ type: "delete-task", id })
     })
   };
+
+  const onAddTask = (event) => {
+    event.preventDefault();
+    const request = { 
+      name: stateT.name,
+      tasks: []
+    };
+    // if(!nameIsvalid(request.name)) {
+    //   return; 
+    // }
+    //request.name = request.name.trim();
+    fetch(HOST_API + "/todo", {
+      method: "POST",
+      body: JSON.stringify(request),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then((todo) => {
+        dispatch({ type: "add-item", item: todo });
+        setStateT({ name: "" });
+        formRef.current.reset();
+      });
+  }
   
+  const onEditTask = (event) => {
+    event.preventDefault();
+
+    const request = {
+      name: stateT.name,
+      id: itemT.id,
+      completed: itemT.completed,
+      idTodo: itemT.idTodo
+    };
+    console.log(request);
+
+    fetch(HOST_API + "/todo/task", {
+        method: "PUT",
+        body: JSON.stringify(request),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then((task) => {
+        dispatch({
+          type: "update-item",
+          item: task
+        });
+        setStateT({
+          name: ""
+        });
+        formRef.current.reset();
+      });
+  }
+
   const onDeleteToDo = (todo) => { 
     const id=todo.id;
     const id_list = todo.tasks.map((el) =>{
@@ -113,12 +187,19 @@ const List = () => {
     })
   };
 
-  const onEdit = (todo) => {
-    dispatch({ type: "edit-item", item: todo })
+  // const onEdit = (todo) => {
+  //   dispatch({ type: "edit-item", item: todo })
+  // };
+
+  const onEditT = (task) => {
+    //console.log(task);
+    //itemT=task;
+    // setStateT({ ...stateT, name: event.target.value })
+    //console.log(itemT);
+    dispatch({ type: "edit-item", item: task })
   };
 
   const onChange = (event, task) => {
-    console.log(task);
     const request = {
       name: task.name,
       id: task.id,
@@ -149,6 +230,19 @@ const List = () => {
       return <div>
       <h2>{todo.name}</h2> 
       <td><button onClick={() => onDeleteToDo(todo)}>Eliminar</button></td>
+      <hr/>
+      <form ref={formRef}>
+        <input
+          type="text"
+          name="name_task"
+          placeholder="¿Qué piensas hacer hoy?"
+          defaultValue={(itemT.id===todo.id)?itemT.name:""}
+          onChange={(event) => {
+            setStateT({ ...stateT, name: event.target.value })
+          }}></input>
+        {itemT.id && <button onClick={onEditTask}>Actualizar</button>}
+        {!itemT.id && <button onClick={onAddTask}>Crear</button>}
+      </form>
       <table key={todo.id}>
           <thead>
             <tr>
@@ -164,7 +258,7 @@ const List = () => {
                 <td>{task.name}</td>
                 <td><input type="checkbox" defaultChecked={task.completed} onChange={(event) => onChange(event, task)}></input></td>
                 <td><button onClick={() => onDeleteTask(task.id)}>Eliminar</button></td>
-                <td><button onClick={() => onEdit(task)}>Editar</button></td>
+                <td><button onClick={() => onEditT(task)}>Editar</button></td>
               </tr>
             })}
           </tbody>
@@ -217,6 +311,9 @@ function reducer(state, action) {
     case 'edit-item':
       const todoUpEdit = state.todo;
       todoUpEdit.item = action.item;
+      // console.log(todoUpEdit.item);
+
+      // console.log(action.item);
       return { ...state, todo: todoUpEdit }
     case 'add-item':
       const todoUp = state.todo.list;
