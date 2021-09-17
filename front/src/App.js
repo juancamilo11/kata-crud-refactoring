@@ -99,9 +99,17 @@ const List = () => {
     })
   };
   
-  const onDeleteToDo = (id) => { 
-    fetch(HOST_API + "/todo" + id, {
-      method: "DELETE"
+  const onDeleteToDo = (todo) => { 
+    const id=todo.id;
+    const id_list = todo.tasks.map((el) =>{
+      return el.id;
+    });
+    fetch(HOST_API + "/todo/" + id, {
+      method: "DELETE",
+      body: JSON.stringify(id_list),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }).then((list) => {
       dispatch({ type: "delete-todo", id })
     })
@@ -140,6 +148,7 @@ const List = () => {
       
       return <div>
       <h2>{todo.name}</h2> 
+      <td><button onClick={() => onDeleteToDo(todo)}>Eliminar</button></td>
       <table key={todo.id}>
           <thead>
             <tr>
