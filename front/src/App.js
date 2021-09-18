@@ -46,41 +46,6 @@ const Form = () => {
       });
   }
 
-  // const onEdit = (event) => {
-  //   event.preventDefault();
-
-  //   const request = {
-  //     name: state.name,
-  //     id: item.id,
-  //     completed: item.completed,
-  //     idTodo: item.idTodo
-  //   };
-
-  //   fetch(HOST_API + "/todo/task", {
-  //       method: "PUT",
-  //       body: JSON.stringify(request),
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       }
-  //     })
-  //     .then(response => response.json())
-  //     .then((task) => {
-  //       dispatch({
-  //         type: "update-item",
-  //         item: task
-  //       });
-  //       setState({
-  //         name: ""
-  //       });
-  //       formRefTodo.current.reset();
-  //     });
-  // }
-
-  {/* <form className="d-flex">
-          <input className="form-control me-2" type="text" aria-label="Search"/>
-          <button className="btn btn-outline-success" type="submit">Nueva Lista de Tareas</button>
-        </form> */}
-
   return <form ref={formRefTodo}>
     <form className="d-flex">
     <input
@@ -89,13 +54,11 @@ const Form = () => {
       name="name"
       className="form-control"
       placeholder="Crear lista"
-      // defaultValue={item.name}
       onChange={(event) => {
         setState({ ...state, name: event.target.value })
       }}></input>
     <button className="btn btn-success ms-2" onClick={onAdd}>Crear</button>
       </form>
-    {/* {item.id && <button onClick={onEdit}>Actualizar</button>} */}
   </form>
 }
 
@@ -178,7 +141,6 @@ const List = () => {
           name: ""
         });
         formRef.current.reset();
-        // itemT = {};
       });
       
   }
@@ -199,15 +161,7 @@ const List = () => {
     })
   };
 
-  // const onEdit = (todo) => {
-  //   dispatch({ type: "edit-item", item: todo })
-  // };
-
   const onEditT = (task) => {
-    //console.log(task);
-    //itemT=task;
-    // setStateT({ ...stateT, name: event.target.value })
-    //console.log(itemT);
     dispatch({ type: "edit-item", item: task })
   };
 
@@ -238,13 +192,7 @@ const List = () => {
   return <div>
 
     {currentList.map((todo) => {
-      
       return <div>
-
-        {/* <form className="d-flex">
-          <input className="form-control me-2" type="text" aria-label="Search"/>
-          <button className="btn btn-outline-success" type="submit">Nueva Lista de Tareas</button>
-        </form> */}
       <form className="d-flex mb-3 mt-5">
       <h2 >{todo.name}</h2> 
       <td><button onClick={() => onDeleteToDo(todo)} className="btn btn-danger ms-2">Eliminar</button></td>
@@ -260,7 +208,6 @@ const List = () => {
           onChange={(event) => {
             setStateT({ ...stateT, name: event.target.value, id:todo.id })
           }}></input>
-        {/* {itemT.id && <button onClick={onEditTask}>Actualizar</button>} */}
         {itemT.id && itemT.idTodo===todo.id && <button className="btn btn-success" onClick={onEditTask}>Actualizar</button>}
         {!itemT.id && <button className="btn btn-success" onClick={onAddTask}>Crear</button>}
         </form>
@@ -280,10 +227,8 @@ const List = () => {
                 <td>{task.id}</td>
                 <td>{task.name}</td>
                 <td><input type="checkbox" defaultChecked={task.completed} onChange={(event) => onChange(event, task)}></input></td>
-                {/* <td><button onClick={() => onDeleteTask(task.id)}>Eliminar</button></td> */}
                 {!task.completed && <td><button onClick={() => onEditT(task)} className="btn btn-primary">Editar</button></td>}
                 {task.id!==itemT.id && <td><button onClick={() => onDeleteTask(task.id)} className="btn btn-danger">Eliminar</button></td>}
-                {/* {(task.completed) ? task.nombre.setAttribute("text-decoration","line-through") : task.nombre.setAttribute("text-decoration","line-through")} */}
               </tr>
             })}
           </tbody>
@@ -337,9 +282,6 @@ function reducer(state, action) {
     case 'edit-item':
       const todoUpEdit = state.todo;
       todoUpEdit.item = action.item;
-      // console.log(todoUpEdit.item);
-
-      // console.log(action.item);
       return { ...state, todo: todoUpEdit }
     case 'add-item':
       const todoUp = state.todo.list;
@@ -362,17 +304,15 @@ function reducer(state, action) {
 
 const StoreProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
   return <Store.Provider value={{ state, dispatch }}>
     {children}
   </Store.Provider>
-
 }
 
 function App() {
   return <StoreProvider>
     <div className = "container">
-    <h1 className="text-center my-5">To-Do List | Juan Camilo Cardona Calderón</h1> 
+    <h1 className="text-center my-5">ToDo App | Sofka U | Juan Camilo Cardona Calderón</h1> 
       <div className="row">
         <div className="col-md-12">
           <Form />    
@@ -384,18 +324,3 @@ function App() {
 }
 
 export default App;
-
-
-/*
-<Fragment>
-  <div className="container">
-    <h1>Aplicación agregar estudiante</h1>
-    <div className="row">
-      <div className="col-md-12">
-        <Formularios />
-      </div>
-    </div>
-  </div>
-      
-</Fragment>
-*/
