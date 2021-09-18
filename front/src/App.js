@@ -46,47 +46,56 @@ const Form = () => {
       });
   }
 
-  const onEdit = (event) => {
-    event.preventDefault();
+  // const onEdit = (event) => {
+  //   event.preventDefault();
 
-    const request = {
-      name: state.name,
-      id: item.id,
-      completed: item.completed,
-      idTodo: item.idTodo
-    };
+  //   const request = {
+  //     name: state.name,
+  //     id: item.id,
+  //     completed: item.completed,
+  //     idTodo: item.idTodo
+  //   };
 
-    fetch(HOST_API + "/todo/task", {
-        method: "PUT",
-        body: JSON.stringify(request),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then((task) => {
-        dispatch({
-          type: "update-item",
-          item: task
-        });
-        setState({
-          name: ""
-        });
-        formRefTodo.current.reset();
-      });
-  }
+  //   fetch(HOST_API + "/todo/task", {
+  //       method: "PUT",
+  //       body: JSON.stringify(request),
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     })
+  //     .then(response => response.json())
+  //     .then((task) => {
+  //       dispatch({
+  //         type: "update-item",
+  //         item: task
+  //       });
+  //       setState({
+  //         name: ""
+  //       });
+  //       formRefTodo.current.reset();
+  //     });
+  // }
+
+  {/* <form className="d-flex">
+          <input className="form-control me-2" type="text" aria-label="Search"/>
+          <button className="btn btn-outline-success" type="submit">Nueva Lista de Tareas</button>
+        </form> */}
 
   return <form ref={formRefTodo}>
+    <form className="d-flex">
     <input
+      className="form-control me-2"
       type="text"
       name="name"
+      className="form-control"
       placeholder="Crear lista"
       // defaultValue={item.name}
       onChange={(event) => {
         setState({ ...state, name: event.target.value })
       }}></input>
+    <button className="btn btn-success ms-2" onClick={onAdd}>Crear</button>
+      </form>
     {/* {item.id && <button onClick={onEdit}>Actualizar</button>} */}
-    <button onClick={onAdd}>Crear</button>
   </form>
 }
 
@@ -94,7 +103,7 @@ const List = () => {
   const formRef = useRef(null);
   const { dispatch, state: { todo } } = useContext(Store);
   let itemT = todo.item;
-  //console.log(itemT);
+  console.log(itemT);
   const [stateT, setStateT] = useState(itemT);
   const currentList = todo.list;
 
@@ -105,7 +114,6 @@ const List = () => {
         dispatch({ type: "update-list", list })
       })
   }, [dispatch]);
-
 
   const onDeleteTask = (id) => { 
     fetch(HOST_API + "/todo/task/" + id, {
@@ -170,7 +178,9 @@ const List = () => {
           name: ""
         });
         formRef.current.reset();
+        // itemT = {};
       });
+      
   }
 
   const onDeleteToDo = (todo) => { 
@@ -221,50 +231,64 @@ const List = () => {
       });
   };
 
-  // const decorationDone = {
-  //   textDecoration: 'line-through'
-  // };
+  const decorationDone = {
+    textDecoration: 'line-through'
+  };
 
   return <div>
 
     {currentList.map((todo) => {
       
       return <div>
-      <h2>{todo.name}</h2> 
-      <td><button onClick={() => onDeleteToDo(todo)}>Eliminar</button></td>
-      <hr/>
+
+        {/* <form className="d-flex">
+          <input className="form-control me-2" type="text" aria-label="Search"/>
+          <button className="btn btn-outline-success" type="submit">Nueva Lista de Tareas</button>
+        </form> */}
+      <form className="d-flex mb-3 mt-5">
+      <h2 >{todo.name}</h2> 
+      <td><button onClick={() => onDeleteToDo(todo)} className="btn btn-danger ms-2">Eliminar</button></td>
+      </form>
       <form ref={formRef}>
+        <form className="d-flex mb-2">
         <input
+          className="form-control me-2"
           type="text"
           name="name_task"
           placeholder="¿Qué piensas hacer hoy?"
-          defaultValue={(itemT.idTodo===todo.id)?itemT.name:""}
+          defaultValue={(itemT.idTodo===todo.id) ? itemT.name : ""}
           onChange={(event) => {
             setStateT({ ...stateT, name: event.target.value, id:todo.id })
           }}></input>
-        {itemT.id && <button onClick={onEditTask}>Actualizar</button>}
-        {!itemT.id && <button onClick={onAddTask}>Crear</button>}
+        {/* {itemT.id && <button onClick={onEditTask}>Actualizar</button>} */}
+        {itemT.id && itemT.idTodo===todo.id && <button className="btn btn-success" onClick={onEditTask}>Actualizar</button>}
+        {!itemT.id && <button className="btn btn-success" onClick={onAddTask}>Crear</button>}
+        </form>
       </form>
-      <table key={todo.id}>
+      <table key={todo.id} className="table table-bordered">
           <thead>
-            <tr>
+            <tr className="text-center">
               <td>ID</td>
               <td>Descripción</td>
               <td>¿Completado?</td>
+              <td colspan="2">Acción</td>
             </tr>
           </thead>
           <tbody>
             {todo.tasks.map((task) => { 
-              return <tr key={task.id}>
+              return <tr key={task.id} className="text-center">
                 <td>{task.id}</td>
                 <td>{task.name}</td>
                 <td><input type="checkbox" defaultChecked={task.completed} onChange={(event) => onChange(event, task)}></input></td>
-                <td><button onClick={() => onDeleteTask(task.id)}>Eliminar</button></td>
-                <td><button onClick={() => onEditT(task)}>Editar</button></td>
+                {/* <td><button onClick={() => onDeleteTask(task.id)}>Eliminar</button></td> */}
+                {!task.completed && <td><button onClick={() => onEditT(task)} className="btn btn-primary">Editar</button></td>}
+                {task.id!==itemT.id && <td><button onClick={() => onDeleteTask(task.id)} className="btn btn-danger">Eliminar</button></td>}
+                {/* {(task.completed) ? task.nombre.setAttribute("text-decoration","line-through") : task.nombre.setAttribute("text-decoration","line-through")} */}
               </tr>
             })}
           </tbody>
         </table>
+        <hr/>
       </div>
     })}
   </div>
@@ -276,7 +300,7 @@ function reducer(state, action) {
     case 'update-item':
       const todoUpItem = state.todo;
       const listUpdateEdit = todoUpItem.list.map((item) => {
-        let tasks = item.tasks.map(el=>{
+        const tasks = item.tasks.map(el=>{
           if (el.id === action.item.id) {
           return action.item;
         }
@@ -347,10 +371,31 @@ const StoreProvider = ({ children }) => {
 
 function App() {
   return <StoreProvider>
-    <h3>To-Do List</h3>
-    <Form />
-    <List />
+    <div className = "container">
+    <h1 className="text-center my-5">To-Do List | Juan Camilo Cardona Calderón</h1> 
+      <div className="row">
+        <div className="col-md-12">
+          <Form />    
+          <List />
+        </div>
+      </div>
+    </div>
   </StoreProvider>
 }
 
 export default App;
+
+
+/*
+<Fragment>
+  <div className="container">
+    <h1>Aplicación agregar estudiante</h1>
+    <div className="row">
+      <div className="col-md-12">
+        <Formularios />
+      </div>
+    </div>
+  </div>
+      
+</Fragment>
+*/
