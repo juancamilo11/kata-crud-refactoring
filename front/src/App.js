@@ -6,15 +6,6 @@ const initialState = {
 };
 const Store = createContext(initialState)
 
-// const nameIsvalid = (name) => {
-//   let nameToValidate = name || "";
-//   if (nameToValidate.test(RegExp/[0-9A-Za-z*_()]{1-50}/)) {
-//     return true;
-//   } 
-//   console.log(nameToValidate.match(/[A-Za-z*_()]{1-50}/));
-//   return false;
-// }
-
 const Form = () => {
   const formRefTodo = useRef(null);
   const { dispatch, state: { todo } } = useContext(Store);
@@ -27,10 +18,7 @@ const Form = () => {
       name: state.name,
       tasks: []
     };
-    // if(!nameIsvalid(request.name)) {
-    //   return; 
-    // }
-    //request.name = request.name.trim();
+    request.name = request.name.trim();
     fetch(HOST_API + "/todo", {
       method: "POST",
       body: JSON.stringify(request),
@@ -52,6 +40,7 @@ const Form = () => {
       className="form-control me-2"
       type="text"
       name="name"
+      required = "true"
       className="form-control"
       placeholder="Crear lista"
       onChange={(event) => {
@@ -93,11 +82,6 @@ const List = () => {
       completed: false,
       idTodo: stateT.id
     };
-    console.log(request);
-    // if(!nameIsvalid(request.name)) {
-    //   return; 
-    // }
-    //request.name = request.name.trim();
     fetch(HOST_API + "/todo/task", {
       method: "POST",
       body: JSON.stringify(request),
@@ -122,27 +106,25 @@ const List = () => {
       completed: itemT.completed,
       idTodo: itemT.idTodo
     };
-    console.log(request);
 
     fetch(HOST_API + "/todo/task", {
-        method: "PUT",
-        body: JSON.stringify(request),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(response => response.json())
-      .then((task) => {
-        dispatch({
-          type: "update-item",
-          item: task
-        });
-        setStateT({
-          name: ""
-        });
-        formRef.current.reset();
+      method: "PUT",
+      body: JSON.stringify(request),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then((task) => {
+      dispatch({
+        type: "update-item",
+        item: task
       });
-      
+      setStateT({
+        name: ""
+      });
+      formRef.current.reset();
+    });
   }
 
   const onDeleteToDo = (todo) => { 
@@ -156,7 +138,8 @@ const List = () => {
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then((list) => {
+    })
+      .then((list) => {
       dispatch({ type: "delete-todo", id })
     })
   };
@@ -179,18 +162,13 @@ const List = () => {
         'Content-Type': 'application/json'
       }
     })
-      .then(response => response.json())
-      .then((task) => {
-        dispatch({ type: "update-item", item: task });
-      });
-  };
-
-  const decorationDone = {
-    textDecoration: 'line-through'
+    .then(response => response.json())
+    .then((task) => {
+      dispatch({ type: "update-item", item: task });
+    });
   };
 
   return <div>
-
     {currentList.map((todo) => {
       return <div>
       <form className="d-flex mb-3 mt-5">
@@ -203,6 +181,7 @@ const List = () => {
           className="form-control me-2"
           type="text"
           name="name_task"
+          required = "true"
           placeholder="¿Qué piensas hacer hoy?"
           defaultValue={(itemT.idTodo===todo.id) ? itemT.name : ""}
           onChange={(event) => {
